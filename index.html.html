@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My CI/CD Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            margin: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .badge {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        .info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .status {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        
+        button:hover {
+            background: #5a67d8;
+        }
+        
+        .version {
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 CI/CD Pipeline Demo</h1>
+        <div class="badge">✅ Deployed with GitHub Actions + Azure</div>
+        
+        <div class="info">
+            <p><strong>📋 Pipeline Status:</strong> <span class="status">● ACTIVE</span></p>
+            <p><strong>🔄 Last Deployment:</strong> <span id="timestamp">Just now</span></p>
+            <p><strong>📦 Version:</strong> <span id="version">1.0.0</span></p>
+            <p><strong>🔧 Tools Used:</strong> GitHub Actions, Azure Static Web Apps</p>
+        </div>
+        
+        <button onclick="updateTime()">Click to Verify JavaScript Works</button>
+        <p style="margin-top: 15px; font-size: 14px; color: #6c757d;">
+            Every push to GitHub automatically updates this page!
+        </p>
+        <div class="version">
+            Built with ❤️ using DevOps CI/CD Pipeline
+        </div>
+    </div>
+    
+    <script>
+        function updateTime() {
+            document.getElementById('timestamp').innerHTML = new Date().toLocaleString();
+            alert('✅ JavaScript is working! Your pipeline is running correctly.');
+        }
+        
+        document.getElementById('timestamp').innerHTML = new Date().toLocaleString();
+    </script>
+</body>
+</html>
