@@ -1,0 +1,36 @@
+name: 2. Test Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Security scan
+        run: |
+          echo "=== TEST PIPELINE ==="
+          echo "🔐 Running security scan..."
+          if grep -qi "password\|secret\|key" index.html; then
+            echo "⚠️ WARNING: Possible secrets found"
+          else
+            echo "✅ Security scan PASSED"
+          fi
+      
+      - name: HTML validation
+        run: |
+          echo "🔍 Validating HTML..."
+          if grep -q "<html" index.html && grep -q "<body" index.html; then
+            echo "✅ HTML validation PASSED"
+          else
+            echo "❌ HTML validation FAILED"
+            exit 1
+          fi
+      
+      - name: Test summary
+        run: echo "✅ Test pipeline finished successfully"
