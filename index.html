@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My CI/CD Demo</title>
+    <meta name="description" content="CI/CD Pipeline Demo - DevOps Project">
+    <meta name="author" content="Your Name">
+    <title>DevOps CI/CD Pipeline | Azure + GitHub Actions</title>
     <style>
         * {
             margin: 0;
@@ -13,101 +15,300 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
         
         .container {
-            background: white;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 40px;
-            max-width: 600px;
-            margin: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
         }
         
         h1 {
-            color: #667eea;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+        
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
         }
         
         .badge {
-            background: #28a745;
-            color: white;
             padding: 8px 16px;
             border-radius: 20px;
-            display: inline-block;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-        
-        .info {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: left;
-        }
-        
-        .status {
-            color: #28a745;
+            font-size: 12px;
             font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .badge-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .info-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #667eea;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .info-value {
+            color: #212529;
+            font-family: monospace;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background: #28a745;
+            box-shadow: 0 0 5px #28a745;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
         
         button {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 14px 28px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 20px;
+            font-weight: bold;
+            width: 100%;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
         button:hover {
-            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
         
-        .version {
-            color: #6c757d;
-            font-size: 12px;
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .alert {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 20px;
+            text-align: center;
+            color: #155724;
+            display: none;
+        }
+        
+        .alert.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .footer {
+            text-align: center;
             margin-top: 30px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .tech-item {
+            background: #e9ecef;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            color: #495057;
+        }
+        
+        @media (max-width: 600px) {
+            .card {
+                padding: 25px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .info-row {
+                flex-direction: column;
+                gap: 5px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 CI/CD Pipeline Demo</h1>
-        <div class="badge">✅ Deployed with GitHub Actions + Azure</div>
-        
-        <div class="info">
-            <p><strong>📋 Pipeline Status:</strong> <span class="status">● ACTIVE</span></p>
-            <p><strong>🔄 Last Deployment:</strong> <span id="timestamp">Just now</span></p>
-            <p><strong>📦 Version:</strong> <span id="version">1.0.4</span></p>
-            <p><strong>🔧 Tools Used:</strong> GitHub Actions, Azure Static Web Apps</p>
-        </div>
-        
-        <button onclick="updateTime()">Click to Verify JavaScript Works</button>
-        <p style="margin-top: 15px; font-size: 14px; color: #6c757d;">
-            Every push to GitHub automatically updates this page!
-        </p>
-        <div class="version">
-            Built with ❤️ using DevOps CI/CD Pipeline
+        <div class="card">
+            <h1>🚀 CI/CD Pipeline Demo</h1>
+            <p class="subtitle">Continuous Integration & Continuous Deployment</p>
+            
+            <div class="badge-container">
+                <span class="badge badge-success">✅ Build Pipeline</span>
+                <span class="badge badge-success">✅ Test Pipeline</span>
+                <span class="badge badge-success">✅ Deploy Pipeline</span>
+            </div>
+            
+            <div class="info-panel">
+                <div class="info-row">
+                    <span class="info-label">📋 System Status:</span>
+                    <span class="info-value">
+                        <span class="status-indicator status-active"></span>
+                        Active
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🔄 Last Deployment:</span>
+                    <span class="info-value" id="timestamp">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">📦 Application Version:</span>
+                    <span class="info-value" id="version">2.0.0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🔧 CI/CD Platform:</span>
+                    <span class="info-value">GitHub Actions</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">☁️ Cloud Hosting:</span>
+                    <span class="info-value">Azure Static Web Apps + CDN</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🌐 HTTPS:</span>
+                    <span class="info-value">Enabled (Azure CDN)</span>
+                </div>
+            </div>
+            
+            <button onclick="showPipelineInfo()">
+                📊 View Pipeline Details
+            </button>
+            
+            <div id="alert" class="alert"></div>
+            
+            <div class="tech-stack">
+                <span class="tech-item">GitHub</span>
+                <span class="tech-item">GitHub Actions</span>
+                <span class="tech-item">YAML</span>
+                <span class="tech-item">Azure</span>
+                <span class="tech-item">CDN</span>
+                <span class="tech-item">HTTPS</span>
+            </div>
+            
+            <div class="footer">
+                <p>DevOps CI/CD Pipeline | Cloud Computing Final Project</p>
+                <p>Every push to GitHub triggers automatic build → test → deploy</p>
+            </div>
         </div>
     </div>
     
     <script>
-        function updateTime() {
-            document.getElementById('timestamp').innerHTML = new Date().toLocaleString();
-            alert('✅ JavaScript is working! Your pipeline is running correctly.');
+        // Set current timestamp on page load
+        document.getElementById('timestamp').innerHTML = new Date().toLocaleString();
+        
+        function showPipelineInfo() {
+            const alertBox = document.getElementById('alert');
+            alertBox.innerHTML = `
+                <strong>📊 Pipeline Information</strong><br><br>
+                ✅ Build Pipeline: Validates HTML & creates artifact<br>
+                ✅ Test Pipeline: Security scan & HTML validation<br>
+                ✅ Deploy Pipeline: Deploys to Azure CDN<br><br>
+                <small>⏱️ Last run: ${new Date().toLocaleString()}</small>
+            `;
+            alertBox.classList.add('show');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 5000);
         }
         
-        document.getElementById('timestamp').innerHTML = new Date().toLocaleString();
+        // Check if page was loaded via CDN (cache status)
+        if (performance.getEntriesByType("navigation")[0].type === "reload") {
+            console.log("Page was reloaded - fresh content");
+        }
     </script>
 </body>
 </html>
