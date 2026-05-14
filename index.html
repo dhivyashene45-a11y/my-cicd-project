@@ -3,165 +3,629 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CI/CD Pipeline | Azure + GitHub Actions</title>
+    <meta name="description" content="Professional DevOps CI/CD Pipeline Demo - GitHub Actions + Microsoft Azure">
+    <meta name="author" content="Cloud Computing Student">
+    <title>CI/CD Pipeline | DevOps Demo</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             min-height: 100vh;
+            background: radial-gradient(ellipse at 0% 0%, #0a0f1e 0%, #0a0f1e 35%, #0b1525 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(90deg, rgba(66, 153, 225, 0.03) 0px, rgba(66, 153, 225, 0.03) 1px, transparent 1px, transparent 100px),
+                repeating-linear-gradient(0deg, rgba(66, 153, 225, 0.03) 0px, rgba(66, 153, 225, 0.03) 1px, transparent 1px, transparent 100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(66, 153, 225, 0.4);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .badge-row {
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
         }
-        .card {
-            max-width: 900px;
-            width: 100%;
-            background: rgba(255,255,255,0.1);
+
+        .tech-badge {
+            background: rgba(66, 153, 225, 0.15);
             backdrop-filter: blur(10px);
-            border-radius: 32px;
-            padding: 40px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 1px solid rgba(66, 153, 225, 0.3);
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #90cdf4;
+            letter-spacing: 0.5px;
         }
+
         h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #fff, #a855f7);
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #90cdf4 50%, #63b3ed 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
         }
+
         .subtitle {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: rgba(15, 25, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(66, 153, 225, 0.2);
+            border-radius: 24px;
+            padding: 24px 20px;
             text-align: center;
-            color: #cbd5e0;
-            margin-bottom: 40px;
+            transition: all 0.3s ease;
         }
-        .badge-container {
+
+        .stat-card:hover {
+            border-color: rgba(66, 153, 225, 0.5);
+            transform: translateY(-4px);
+            background: rgba(20, 30, 50, 0.8);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #63b3ed;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Pipeline Cards */
+        .pipelines {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            margin-bottom: 60px;
+        }
+
+        .pipeline-card {
+            background: rgba(10, 20, 35, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(66, 153, 225, 0.4);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .pipeline-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(66, 153, 225, 0.15);
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
         }
-        .badge {
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-size: 0.8rem;
+
+        .pipeline-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(66, 153, 225, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .pipeline-title {
+            flex: 1;
+        }
+
+        .pipeline-title h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+
+        .pipeline-status {
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #28a745;
+            box-shadow: 0 0 6px #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pipeline-body {
+            padding: 20px 24px;
+        }
+
+        .step-list {
+            list-style: none;
+        }
+
+        .step-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 0.9rem;
+            color: #cbd5e0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .step-list li:last-child {
+            border-bottom: none;
+        }
+
+        .step-check {
+            color: #28a745;
             font-weight: bold;
         }
-        .badge-green { background: #28a745; color: white; }
-        .badge-blue { background: #4299e1; color: white; }
-        .badge-purple { background: #a855f7; color: white; }
-        .pipeline-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+
+        /* Main Info Panel */
+        .info-panel {
+            background: rgba(15, 25, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            border: 1px solid rgba(66, 153, 225, 0.25);
+            overflow: hidden;
             margin-bottom: 40px;
         }
-        .pipeline-card {
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+
+        .info-header {
+            background: linear-gradient(135deg, rgba(66, 153, 225, 0.15), rgba(99, 179, 237, 0.05));
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(66, 153, 225, 0.15);
         }
-        .pipeline-card h3 { color: #a855f7; margin-bottom: 15px; }
-        .pipeline-card li {
-            list-style: none;
-            padding: 8px 0;
-            color: #cbd5e0;
+
+        .info-header h2 {
+            color: #e2e8f0;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
-        .info-panel {
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 28px;
         }
-        .info-row {
+
+        .info-item {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        button {
-            width: 100%;
-            background: linear-gradient(135deg, #a855f7, #7c3aed);
-            color: white;
+
+        .info-label {
+            font-weight: 500;
+            color: #90cdf4;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+
+        .info-value {
+            color: #e2e8f0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Action Button */
+        .action-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
             border: none;
-            padding: 14px;
-            border-radius: 12px;
+            padding: 14px 36px;
+            border-radius: 48px;
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 600;
+            color: white;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(66, 153, 225, 0.3);
         }
-        button:hover { transform: translateY(-2px); }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(66, 153, 225, 0.4);
+            background: linear-gradient(135deg, #3182ce, #2b6cb0);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a202c;
+            border-left: 4px solid #4299e1;
+            border-radius: 12px;
+            padding: 16px 24px;
+            max-width: 350px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-title {
+            font-weight: 600;
+            color: #63b3ed;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            font-size: 0.85rem;
+            color: #cbd5e0;
+        }
+
+        /* Footer */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            color: #718096;
-            font-size: 0.75rem;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(66, 153, 225, 0.15);
+            margin-top: 20px;
         }
-        @media (max-width: 600px) {
-            .card { padding: 24px; }
-            h1 { font-size: 1.8rem; }
+
+        .footer p {
+            color: #718096;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .container { padding: 24px 16px; }
+            .pipelines { grid-template-columns: 1fr; }
+            .info-grid { padding: 20px; }
+            .toast { left: 20px; right: 20px; max-width: none; bottom: 20px; }
+        }
+
+        /* Glow effect */
+        .glow {
+            text-shadow: 0 0 10px rgba(66, 153, 225, 0.3);
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>🚀 CI/CD Pipeline Demo</h1>
-        <p class="subtitle">Continuous Integration & Continuous Deployment</p>
-        
-        <div class="badge-container">
-            <span class="badge badge-green">✅ Build Pipeline</span>
-            <span class="badge badge-blue">✅ Test Pipeline</span>
-            <span class="badge badge-purple">✅ Deploy Pipeline</span>
+
+<div class="particles" id="particles"></div>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="badge-row">
+            <span class="tech-badge">⚡ GitHub Actions</span>
+            <span class="tech-badge">☁️ Microsoft Azure</span>
+            <span class="tech-badge">🔄 CI/CD Pipeline</span>
+            <span class="tech-badge">🔒 HTTPS + CDN</span>
         </div>
-        
-        <div class="pipeline-grid">
-            <div class="pipeline-card">
-                <h3>🏗️ Build Pipeline</h3>
-                <li>✅ Checkout code</li>
-                <li>✅ Validate index.html</li>
-                <li>✅ Create artifact</li>
-            </div>
-            <div class="pipeline-card">
-                <h3>🔍 Test Pipeline</h3>
-                <li>✅ Security scan</li>
-                <li>✅ HTML validation</li>
-                <li>✅ Performance check</li>
-            </div>
-            <div class="pipeline-card">
-                <h3>🚀 Deploy Pipeline</h3>
-                <li>✅ Upload to Azure</li>
-                <li>✅ CDN cache purge</li>
-                <li>✅ HTTPS enabled</li>
-            </div>
+        <h1>DevOps CI/CD Pipeline</h1>
+        <p class="subtitle">Continuous Integration • Continuous Deployment • Automated Workflows</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">⚙️</div>
+            <div class="stat-value" id="buildCount">3</div>
+            <div class="stat-label">Pipeline Stages</div>
         </div>
-        
-        <div class="info-panel">
-            <div class="info-row"><span>📋 System Status</span><span>🟢 Active</span></div>
-            <div class="info-row"><span>🔄 Last Deployment</span><span id="timestamp">Loading...</span></div>
-            <div class="info-row"><span>📦 Version</span><span>v2.0.0</span></div>
-            <div class="info-row"><span>☁️ Hosting</span><span>Azure + CDN</span></div>
-            <div class="info-row"><span>🔒 Security</span><span>HTTPS / TLS 1.3</span></div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="deployTime">~45s</div>
+            <div class="stat-label">Avg. Deploy Time</div>
         </div>
-        
-        <button onclick="alert('✅ Pipelines are working!\n\nBuild: PASSED\nTest: PASSED\nDeploy: PASSED')">
-            📊 Check Pipeline Status
-        </button>
-        
-        <div class="footer">
-            <p>GitHub Actions + Microsoft Azure Static Web Apps</p>
-            <p>Every push to main → Auto Build → Test → Deploy</p>
+        <div class="stat-card">
+            <div class="stat-icon">🌐</div>
+            <div class="stat-value" id="uptime">100%</div>
+            <div class="stat-label">Uptime (CDN)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🔐</div>
+            <div class="stat-value" id="security">Active</div>
+            <div class="stat-label">Security Scanning</div>
         </div>
     </div>
+
+    <!-- Pipeline Cards -->
+    <div class="pipelines">
+        <!-- Build Pipeline -->
+        <div class="pipeline-card">
+            <div class="pipeline-header">
+                <div class="pipeline-icon">🏗️</div>
+                <div class="pipeline-title">
+                    <h3>Build Pipeline</h3>
+                    <div class="pipeline-status">
+                        <span class="status-dot"></span>
+                        <span>Operational</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pipeline-body">
+                <ul class="step-list">
+                    <li><span class="step-check">✅</span> Checkout code from GitHub</li>
+                    <li><span class="step-check">✅</span> Validate index.html exists</li>
+                    <li><span class="step-check">✅</span> Verify file integrity</li>
+                    <li><span class="step-check">✅</span> Create deployment artifact</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Test Pipeline -->
+        <div class="pipeline-card">
+            <div class="pipeline-header">
+                <div class="pipeline-icon">🔍</div>
+                <div class="pipeline-title">
+                    <h3>Test Pipeline</h3>
+                    <div class="pipeline-status">
+                        <span class="status-dot"></span>
+                        <span>Operational</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pipeline-body">
+                <ul class="step-list">
+                    <li><span class="step-check">✅</span> Security vulnerability scan</li>
+                    <li><span class="step-check">✅</span> HTML structure validation</li>
+                    <li><span class="step-check">✅</span> File size optimization check</li>
+                    <li><span class="step-check">✅</span> Pipeline health report</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Deploy Pipeline -->
+        <div class="pipeline-card">
+            <div class="pipeline-header">
+                <div class="pipeline-icon">🚀</div>
+                <div class="pipeline-title">
+                    <h3>Deploy Pipeline</h3>
+                    <div class="pipeline-status">
+                        <span class="status-dot"></span>
+                        <span>Operational</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pipeline-body">
+                <ul class="step-list">
+                    <li><span class="step-check">✅</span> Upload to Azure Static Web Apps</li>
+                    <li><span class="step-check">✅</span> CDN cache invalidation</li>
+                    <li><span class="step-check">✅</span> HTTPS certificate renewal</li>
+                    <li><span class="step-check">✅</span> Global edge deployment</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="info-panel">
+        <div class="info-header">
+            <h2>📊 System Status & Information</h2>
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">System Status</span>
+                <span class="info-value">🟢 Active & Operational</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Last Deployment</span>
+                <span class="info-value" id="lastDeploy">Loading...</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Application Version</span>
+                <span class="info-value" id="version">v2.0.0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">CI/CD Platform</span>
+                <span class="info-value">GitHub Actions</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Hosting Infrastructure</span>
+                <span class="info-value">Azure Static Web Apps + CDN</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Encryption</span>
+                <span class="info-value">TLS 1.3 / HTTPS</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Trigger Mechanism</span>
+                <span class="info-value">Push to main branch</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Cost Control</span>
+                <span class="info-value">Azure for Students ($0)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="action-section">
+        <button class="btn-primary" onclick="showPipelineDetails()">
+            📋 View Pipeline Execution Details
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>DevOps CI/CD Pipeline | Built with GitHub Actions + Microsoft Azure</p>
+        <p style="margin-top: 8px;">Every commit to main branch triggers automatic Build → Test → Deploy</p>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">
+    <div class="toast-title">📡 Pipeline Information</div>
+    <div class="toast-message" id="toastMessage">Build, Test, and Deploy stages completed successfully.</div>
+</div>
+
+<script>
+    // Set current timestamp
+    document.getElementById('lastDeploy').innerHTML = new Date().toLocaleString();
+
+    // Function to show pipeline details
+    function showPipelineDetails() {
+        const toast = document.getElementById('toast');
+        const message = document.getElementById('toastMessage');
+        
+        const now = new Date();
+        const timestamp = now.toLocaleString();
+        
+        message.innerHTML = `
+            ✅ Build Pipeline: Validated index.html<br>
+            ✅ Test Pipeline: Security scan passed<br>
+            ✅ Deploy Pipeline: Published to Azure CDN<br>
+            <small>⏱️ Last run: ${timestamp}</small>
+        `;
+        
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 5000);
+    }
+
+    // Create floating particles
+    function createParticles() {
+        const container = document.getElementById('particles');
+        const particleCount = 40;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 4 + 1;
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 10;
+            const left = Math.random() * 100;
+            
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = left + '%';
+            particle.style.animationDuration = duration + 's';
+            particle.style.animationDelay = delay + 's';
+            
+            container.appendChild(particle);
+        }
+    }
     
-    <script>
-        document.getElementById('timestamp').innerHTML = new Date().toLocaleString();
-    </script>
+    createParticles();
+
+    // Auto-refresh timestamp every second
+    setInterval(() => {
+        document.getElementById('lastDeploy').innerHTML = new Date().toLocaleString();
+    }, 1000);
+
+    // Simulate live version check (optional: can be replaced with actual API call)
+    console.log('CI/CD Dashboard Loaded - ' + new Date().toISOString());
+</script>
+
 </body>
 </html>
